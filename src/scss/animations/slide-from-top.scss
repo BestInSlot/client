@@ -1,0 +1,27 @@
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    visibility: visible;
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+
+.slide-down {
+  animation: slideInDown 0.15s linear forwards;
+}
+
+.slide-up {
+  animation: slideOutUp 0.15s linear forwards;
+}

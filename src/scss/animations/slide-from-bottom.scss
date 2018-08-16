@@ -1,0 +1,24 @@
+$slide-bottom-animation-duration: 250ms;
+$slide-bottom-timing-function: linear;
+$slide-bottom-animation-fill-mode: forwards;
+
+@keyframes slideInFromBottom {
+    from { 
+        transform: translateY(100%);
+        visibility: visible;
+    }
+    to { transform: translateY(100)}
+}
+
+@keyframes slideOutFromBottom {
+    from {transform:translateY(0)}
+    to {transform:translateY(100%)}
+}
+
+.slide-in-from-bottom {
+    animation: slideInFromBottom $slide-bottom-animation-duration $slide-bottom-timing-function $slide-bottom-animation-fill-mode;
+}
+
+.slide-out-from-bottom {
+    animation: slideOutFromBottom $slide-bottom-animation-duration $slide-bottom-timing-function $slide-bottom-animation-fill-mode;
+}

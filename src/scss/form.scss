@@ -1,0 +1,18 @@
+.is-disabled {
+  opacity: .2;
+}
+.label {
+  color: #cacaca !important;
+}
+.field:not(:last-child) {
+  margin-bottom: 3rem !important;
+}
+
+.field:last-child {
+  flex: 1;
+}
+
+fieldset {
+  border: 0;
+}
+

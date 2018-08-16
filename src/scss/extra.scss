@@ -1,0 +1,15 @@
+.bis-notification {
+    background-color: #1f1f1f !important;
+    padding: 1rem !important;
+    border-radius: none;
+    border-left: 3px solid $highlight-color;
+    &.success {
+        border-color: #2ec771 !important;
+    }
+    &.danger {
+        border-color: #e74c3c !important;
+    }
+    &.warn {
+        border-color: #f39c12 !important;
+    }
+}

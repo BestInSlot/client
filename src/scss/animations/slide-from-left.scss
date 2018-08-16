@@ -1,0 +1,30 @@
+$slide-animation-duration: 250ms;
+$slide-timing-function: linear;
+$slide-animation-fill-mode: forwards;
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    visibility: visible;
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutFromLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translate(-100%);
+  }
+}
+
+.slide-in-from-left {
+  animation: slideInFromLeft $slide-transition-timing $slide-timing-function $slide-animation-fill-mode;
+}
+
+.slide-out-from-left {
+  animation: slideOutFromLeft $slide-transition-timing $slide-timing-function $slide-animation-fill-mode;
+}
