@@ -46,23 +46,24 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { auth } from "@/main";
 
 export default {
   beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (vm.isAuthenticated) {
+    if (auth.ready()) {
+      console.log("Ready...");
+      if (auth.check()) {
         const { sso, sig } = to.query;
-        vm.$nextTick(() => {
-          setTimeout(() => {
-            vm.loginIntoDiscourse(sso, sig);
-          }, 100);
+        next(vm => {
+          // vm.$nextTick(() => {
+          //   setTimeout(() => {
+          //     vm.loginIntoDiscourse(sso, sig);
+          //   }, 100);
+          // });
+          vm.loginIntoDiscourse(sso, sig);
         });
-      }
-    });
-  },
-
-  computed: {
-    ...mapGetters(["isAuthenticated", "userDetails"])
+      } 
+    } 
   },
 
   methods: {
@@ -71,7 +72,7 @@ export default {
         const res = await this.$http.post("/users/sso", {
           payload,
           signature,
-          avatar_url: `http://localhost${this.userDetails.avatar}`
+          avatar_url: `http://localhost${this.$auth.user().avatar}`
         });
         const { sso, sig } = res.data;
         window.location.replace(
@@ -79,8 +80,6 @@ export default {
             this.$discourse.port
           }/session/sso_login?sso=${sso}&sig=${sig}`
         );
-
-        this.$socket.emit("room", "login");
       } catch (e) {
         if (e.response) {
           this.$router.push(`/error/${e.response.status}`);

@@ -1,13 +1,15 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import * as auth from "./modules/auth";
+import recruitment from "./modules/recruitment";
 import * as post from "./modules/posts";
+import * as streams from "./modules/streams";
 
 Vue.use(Vuex);
 
 const modules = {
-  auth,
-  post
+  post,
+  streams,
+  recruitment
 };
 
 export default new Vuex.Store({
@@ -15,7 +17,6 @@ export default new Vuex.Store({
     modal: false,
     showMobileMenu: false,
     showEditor: false,
-    _id: null,
     siteKey: "6Ldcm1sUAAAAALDyu1f5Q60-fQbIDLrG5_i6F-ff"
   },
   getters: {
@@ -34,9 +35,6 @@ export default new Vuex.Store({
     },
     TOGGLE_EDITOR(state, bool) {
       state.showEditor = bool;
-    },
-    UPDATE_ID(state, id) {
-      state._id = id;
     }
   },
   actions: {

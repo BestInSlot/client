@@ -78,7 +78,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isAuthenticated", "editableContent", "verb"]),
+    ...mapGetters(["editableContent", "verb"]),
 
     rootClasses() {
       return { draft: this.hidden };
@@ -179,7 +179,7 @@ export default {
     },
 
     async save() {
-      if (!this.isAuthenticated) {
+      if (!this.$auth.check()) {
         const message = "Not authorized to make a post.";
         this.msgOpts.icon = "exclamation-triangle";
         this.msgOpts.className[1] = "danger";

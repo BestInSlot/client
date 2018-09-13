@@ -29,10 +29,7 @@ export default {
    const { code } = to.params;
     try {
       const response = await put("/users/verify", { code });
-
-      if (response.status >= 200 && response.status < 304) {
-        next(vm => vm.success = true);
-      }
+      next(vm => vm.success = true);
       console.log(response);
     } catch (e) {
       if (e && e.response) {
@@ -77,12 +74,7 @@ export default {
       }
 
       if (response.data.email) {
-        this.notify({
-          group: "notes",
-          type: "success",
-          title: "Success!",
-          text: `An email has been dispatched to ${response.data.email}`
-        });
+       this.$
       }
     }
   }

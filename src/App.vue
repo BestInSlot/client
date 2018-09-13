@@ -14,12 +14,14 @@
 </template>
 
 <script>
-import Header from "@/components/Header";
+import Header from "@/components/navigation/Header";
+import Footer from "@/components/navigation/Footer";
+import MobileMenu from "@/components/navigation/Mobile";
+
 import isUnique from "./validators/isUnique";
-import Footer from "@/components/Footer";
-import MobileMenu from "@/components/menus/Mobile";
-import Modal from "@/components/UserModal";
 import interceptors from "@/util/interceptors";
+
+import Modal from "@/components/authentication/UserModal";
 import { mapGetters } from "vuex";
 
 export default {
@@ -72,7 +74,7 @@ export default {
       };
       try {
         let response = await this.$auth.login({ data });
-        this.$toasted.show("You've been signed in!.", {
+        this.$toasted.show("You've been signed in!", {
           className: ["bis-notification", "success"],
           duration: 5000,
           theme: "primary",

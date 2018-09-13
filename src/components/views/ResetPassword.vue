@@ -17,6 +17,7 @@
 
 <script>
 import { put } from "axios";
+import { auth } from "@/main";
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -24,11 +25,7 @@ export default {
     put(`/users/update/password`, { username, key })
       .then(res => {
         next(vm => {
-          if (vm.isAuthenticated) {
-            vm.$router.push("errors/404");
-          } else {
             vm.email = res.data.user.email;
-          }
         });
       })
       .catch(e => {
@@ -41,12 +38,6 @@ export default {
       email: ""
     };
   },
-
-  computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    }
-  }
 };
 </script>
 

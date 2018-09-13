@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import Register from "@/components/forms/Register";
-import Login from "@/components/forms/Login";
-import ForgotPassword from "@/components/forms/ForgotPassword";
-import DiscordLogin from "@/components/DiscordLoginButton";
+import Register from "@/components/authentication/Register";
+import Login from "@/components/authentication/Login";
+import ForgotPassword from "@/components/authentication/ForgotPassword";
+import DiscordLogin from "@/components/authentication/DiscordLoginButton";
 
 export default {
   components: {

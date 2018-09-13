@@ -11,12 +11,17 @@
             </div>
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <router-link class="nav-item" to="/">Home</router-link> 
-                    <router-link class="nav-item" to="/">History</router-link> 
-                    <router-link class="nav-item" to="/">Recruitment</router-link> 
-                    <router-link class="nav-item" to="/">Media</router-link> 
-                    <a :href="`${forumUrl}/session/sso`" class="nav-item" v-if="$auth.check()" target="_blank">Discussion</a>           
-                    <a :href="forumUrl" class="nav-item" v-else target="_blank">Discussion</a>                                                 
+                    <router-link class="navbar-item" to="/">Home</router-link> 
+                    <router-link class="navbar-item" to="/">History</router-link> 
+                    <router-link class="navbar-item" to="/">Recruitment</router-link> 
+                    <div class="navbar-item has-dropdown is-hoverable">
+                       <a class="navbar-link">Media</a>
+                       <div class="navbar-dropdown">
+                           <router-link class="navbar-item" to="/media/streams">Streams</router-link>
+                       </div>
+                    </div> 
+                    <a :href="`${forumUrl}/session/sso`" class="navbar-item" v-if="$auth.check()" target="_blank">Discussion</a>           
+                    <a :href="forumUrl" class="navbar-item" v-else target="_blank">Discussion</a>                                                 
                 </div>
                 <div id="account-panel" class="navbar-end" v-if="!$auth.check()">
                     <a class="nav-item" @click.prevent="setModal(true)">
@@ -82,7 +87,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["invalidate", "setModal", "toggleMobile"])
+    ...mapActions(["setModal", "toggleMobile"])
   }
 };
 </script>

@@ -28,7 +28,7 @@
 
 
 <script>
-import Input from './inputs/ModalInput';
+import Input from '@/components/forms/inputs/ModalInput';
 
 export default {
   name: "password-recovery",

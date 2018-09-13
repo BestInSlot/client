@@ -30,7 +30,7 @@
 <script>
 "use strict";
 
-import Input from "./inputs/Input";
+import Input from "@/components/forms/inputs/Primary";
 
 export default {
   components: { appInput: Input },

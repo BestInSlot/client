@@ -52,15 +52,15 @@ export default {
   computed: {
     isAdmin() {
       return (
-        this.$store.getters.userDetails &&
-        this.$store.getters.userDetails.is_admin
+        this.$auth.user() &&
+        this.$auth.user().is_admin
       );
     },
 
     isCurator() {
       return (
-        this.$store.getters.userDetails &&
-        this.$store.getters.userDetails.is_curator
+        this.$auth.user() &&
+        this.$auth.user().is_curator
       );
     },
 

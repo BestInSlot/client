@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/views/account/Avatar";
 
 export default {
   name: "Account",
@@ -56,17 +56,6 @@ export default {
   computed: {
     userDetails() {
       return this.$auth.user();
-    },
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    }
-  },
-
-  watch: {
-    isAuthenticated() {
-      if (!this.isAuthenticated) {
-        this.$router.push("/");
-      }
     }
   },
 

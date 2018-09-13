@@ -28,12 +28,6 @@ export default {
     })
   },
 
-  computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    }
-  },
-
   methods: {
     async saveSecurityChanges(data) {
       try {

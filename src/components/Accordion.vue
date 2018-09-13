@@ -79,7 +79,7 @@ export default {
     toggleTransition(evt) {
       evt.preventDefault();
       evt.stopPropagation();
-      this.transition = "height 250ms ease";
+      this.transition = "height 250ms linear";
       this.height = `${this.$refs.accordion.scrollHeight}px`;
       if (!this.show) {
         this.show = true;

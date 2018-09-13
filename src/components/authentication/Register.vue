@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import Input from "./inputs/Input";
+import Input from "@/components/forms/inputs/Primary";
 import VueRecaptcha from "@/components/Recaptcha";
 export default {
   name: "Register",

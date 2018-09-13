@@ -44,6 +44,7 @@ import Post from "@/components/NewsPost";
 import Carousel from "@/components/carousel/Carousel";
 import TextEditor from "@/components/editor/ComposerNoPreview";
 import { mapGetters, mapActions } from "vuex";
+import { auth } from "@/main";
 
 export default {
   name: "home",
@@ -57,8 +58,8 @@ export default {
   props: ["page"],
 
   beforeRouteEnter(to, from, next) {
+    const token = auth.token();
     const { require_login } = to.query;
-    const token = localStorage.getItem("bis_access_token");
     const page = typeof to.params.page === undefined ? 1 : to.params.page;
 
     next(vm => {
@@ -102,23 +103,23 @@ export default {
     }
   },
 
-  watch: {
-    //if the incoming page request is greater than total pages, we redirect it to keep it within parameters
-    page(page) {
-      console.log(page);
-      if (page > this.totalPages) {
-        this.$router.redirect(`/page/${this.meta.totalPages}`);
-        this.$store.dispatch("fetch", this.totalPages);
-      } else if (page < 1) {
-        this.$router.redirect("/");
-        this.$store.dispatch("fetch", 1);
-      } else {
-        if (!page) {
-          this.$store.dispatch("fetch", 1);
-        }
-      }
-    }
-  }
+  // watch: {
+  //   //if the incoming page request is greater than total pages, we redirect it to keep it within parameters
+  //   page(page) {
+  //     console.log(page);
+  //     if (page > this.totalPages) {
+  //       this.$router.redirect(`/page/${this.meta.totalPages}`);
+  //       this.$store.dispatch("fetch", this.totalPages);
+  //     } else if (page < 1) {
+  //       this.$router.redirect("/");
+  //       this.$store.dispatch("fetch", 1);
+  //     } else {
+  //       if (!page) {
+  //         this.$store.dispatch("fetch", 1);
+  //       }
+  //     }
+  //   }
+  // }
 };
 </script>
 

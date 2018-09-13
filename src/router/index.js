@@ -5,16 +5,19 @@ import interceptors from "@/util/interceptors";
 import ProgressBar from "@/components/ProgressBar";
 
 //views
-import Home from "@/components/views/Home";
+const Home = () => import("@/components/views/Home");
 const Verify = () => import("@/components/views/Verify");
 const ResetPassword = () => import("@/components/views/ResetPassword");
 const ErrorHandler = () => import("@/components/views/ErrorHandler");
 const DiscourseSignIn = () => import("@/components/views/DiscourseSignIn");
-const Account = () => import("@/components/views/Account");
+const Account = () => import("@/components/views/account/Account");
 const ViewPost = () => import("@/components/views/ViewPost");
-const Security = () => import("@/components/views/Security");
-const Personal = () => import("@/components/views/Personal1");
-const UpdateAccount = () => import("@/components/views/UpdateAccount1");
+const Security = () => import("@/components/views/account/Security");
+const Personal = () => import("@/components/views/account/Personal");
+const UpdateAccount = () => import("@/components/views/account/UpdateAccount");
+const Streams = () => import("@/components/views/streams/StreamList");
+const ManageApplications = () => import("@/components/views/applications/ManageApplications");
+// const SingleStream = () => import ("@/components/views/streams/Stream");
 
 const bar = (Vue.prototype.$bar = new Vue(ProgressBar).$mount());
 document.body.appendChild(bar.$el);
@@ -24,6 +27,10 @@ Vue.use(Router);
 const router = new Router({
   mode: "history",
   routes: [
+    {
+      path: "*",
+      component: Home
+    },
     {
       path: "/",
       name: "home",
@@ -52,6 +59,31 @@ const router = new Router({
       meta: {
         title: "Account activated.",
         auth: true
+      }
+    },
+    {
+      path: "/media/streams",
+      name: "streams",
+      component: Streams,
+      meta: {
+        title: "Media - Streams"
+      }
+    },
+    // {
+    //   path: "/media/stream/:stream",
+    //   name: "stream",
+    //   props: true,      
+    //   component: SingleStream,
+    //   meta: {
+    //     title: "Stream"
+    //   }
+    // },
+    {
+      path: "/admin/manage/recruitment",
+      name: "recruitment-applications",
+      component: ManageApplications,
+      meta: {
+        title: "Admin - Manage Applications"
       }
     },
     {
@@ -120,10 +152,6 @@ const router = new Router({
       meta: {
         title: "Error!"
       }
-    },
-    {
-      path: "*",
-      redirect: Home
     }
   ]
 });
@@ -132,7 +160,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title;
   } else {
-    const title = to.params.slug.replace(/-/g, " ");
+    const title = to.params.slug ? to.params.slug.replace(/-/g, " ") : "";
     document.title = title;
   }
   next();
