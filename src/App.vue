@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Header from "@/components/navigation/Header";
+import Header from "@/components/navigation/Header2";
 import Footer from "@/components/navigation/Footer";
 import MobileMenu from "@/components/navigation/Mobile";
 

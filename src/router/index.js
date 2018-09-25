@@ -1,7 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import interceptors from "@/util/interceptors";
-
 import ProgressBar from "@/components/ProgressBar";
 
 //views
@@ -16,7 +14,10 @@ const Security = () => import("@/components/views/account/Security");
 const Personal = () => import("@/components/views/account/Personal");
 const UpdateAccount = () => import("@/components/views/account/UpdateAccount");
 const Streams = () => import("@/components/views/streams/StreamList");
-const ManageApplications = () => import("@/components/views/applications/ManageApplications");
+const Recruitment = () => import("@/components/views/recruitment/Recruitment");
+const AdminRecruitment = () => import("@/components/views/recruitment/AdminRecruitment");
+
+
 // const SingleStream = () => import ("@/components/views/streams/Stream");
 
 const bar = (Vue.prototype.$bar = new Vue(ProgressBar).$mount());
@@ -69,6 +70,15 @@ const router = new Router({
         title: "Media - Streams"
       }
     },
+    {
+      path: "/recruitment",
+      name: "recruitment",
+      component: Recruitment,
+      meta: { 
+        title: "Recruitment - Apply!",
+        auth: true
+      }
+    },
     // {
     //   path: "/media/stream/:stream",
     //   name: "stream",
@@ -79,9 +89,9 @@ const router = new Router({
     //   }
     // },
     {
-      path: "/admin/manage/recruitment",
+      path: "/admin/recruitment",
       name: "recruitment-applications",
-      component: ManageApplications,
+      component: AdminRecruitment,
       meta: {
         title: "Admin - Manage Applications"
       }

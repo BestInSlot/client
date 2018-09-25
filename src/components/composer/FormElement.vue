@@ -6,9 +6,6 @@ export default {
       type: String,
       default: "input"
     },
-    classes: {
-      type: [String, Array, Object]
-    },
     isHoverable: {
       type: Boolean,
       default: false
@@ -28,26 +25,11 @@ export default {
   data() {
     return {
       attrs: null,
-      selected: "Select...",
+      selected: "Select..."
     };
   },
 
   computed: {
-    _classes() {
-      let results = {};
-      if ((this.classes && this.classes.length) || this.classes) {
-        if (Array.isArray(this.classes)) {
-          this.classes.forEach(_class => {
-            results[_class] = true;
-          });
-        } else {
-          results = { [this.classes]: true };
-        }
-        return results;
-      }
-      return null;
-    },
-
     show() {
       return this.selectorId === this.selector;
     }
@@ -56,6 +38,8 @@ export default {
   methods: {
     onClick(val, target) {
       this.$emit("selected", val);
+      this.$emit("input", val);
+      this.$emit("change", val);
       this.$emit("toggle", this.selectorId);
     },
 
@@ -136,13 +120,12 @@ export default {
             dropdown: true,
             "is-active": !this.isHoverable && this.show,
             "is-hoverable": this.isHoverable
-            // ...this._classes
           },
           style: { ...this.styles },
           on: {
             click: event => {
               event.stopPropagation();
-              this.$emit("toggle", this.selectorId)
+              this.$emit("toggle", this.selectorId);
             }
           }
         },
@@ -157,10 +140,10 @@ export default {
         attrs: { ...this.attrs },
         class: { ...this._classes, input: true },
         on: {
-          input: function(event) {
+          input: event => {
             this.$emit("input", event.target.value);
           },
-          change: function(event) {
+          change: event => {
             this.$emit("change", event.target.value);
           }
         }
@@ -172,10 +155,10 @@ export default {
         attrs: { ...this.attrs },
         class: { ...this._classes, textarea: true },
         on: {
-          input: function(event) {
+          input: event => {
             this.$emit("input", event.target.value);
           },
-          change: function(event) {
+          change: event => {
             this.$emit("change", event.target.value);
           }
         }
@@ -184,18 +167,6 @@ export default {
   },
 
   created() {
-    // if (this.classes.length) {
-    //   if (Array.isArray(this.classes)) {
-    //     this._classes.forEach(_class => {
-    //       this._classes[_class] = true;
-    //     });
-    //   }
-    // } else if (isObject(this.classes)) {
-    //   this._classes = { ...this.classes };
-    // } else {
-    //   this._classes[this.classes] = true;
-    // }
-
     this.attrs = {
       id: this.id,
       name: this.name,

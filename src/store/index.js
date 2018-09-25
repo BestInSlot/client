@@ -15,6 +15,7 @@ const modules = {
 export default new Vuex.Store({
   state: {
     modal: false,
+    dropdown: null,
     showMobileMenu: false,
     showEditor: false,
     siteKey: "6Ldcm1sUAAAAALDyu1f5Q60-fQbIDLrG5_i6F-ff"
@@ -24,7 +25,8 @@ export default new Vuex.Store({
     showMobileMenu: state => state.showMobileMenu,
     showEditor: state => state.showEditor,
     _id: state => state._id,
-    siteKey: state => state.siteKey
+    siteKey: state => state.siteKey,
+    dropdown: state => state.dropdown
   },
   mutations: {
     SET_MODAL_STATE(state, bool) {
@@ -35,6 +37,13 @@ export default new Vuex.Store({
     },
     TOGGLE_EDITOR(state, bool) {
       state.showEditor = bool;
+    },
+    TOGGLE_DROPDOWN(state, val) {
+      if (state.dropdown === val) {
+        state.dropdown = null;
+        return;
+      }
+      state.dropdown = val;
     }
   },
   actions: {
@@ -46,6 +55,9 @@ export default new Vuex.Store({
     },
     toggleEditor({ commit }, bool) {
       commit("TOGGLE_EDITOR", bool);
+    },
+    toggleDropDown({ commit }, val) {
+      commit("TOGGLE_DROPDOWN", val);
     }
   },
   modules

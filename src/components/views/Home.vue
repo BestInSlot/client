@@ -70,6 +70,18 @@ export default {
     });
   },
 
+  beforeRouteUpdate(to, from, next) {
+    const token = auth.token();
+    const { require_login } = to.query;
+    const page = typeof to.params.page === undefined ? 1 : to.params.page;
+
+    if (require_login && !token) {
+      this.$store.dispatch("setModal", true);
+    }
+    this.$store.dispatch("fetch", page)
+    next();
+  },
+
   data() {
     return {
       perPage: 20,
