@@ -1,8 +1,6 @@
 import { get } from "axios";
 
-const namespaced = true;
-
-const state = {
+export const state = {
   total: 0,
   currentPage: 1,
   limit: 20,
@@ -10,14 +8,14 @@ const state = {
   selectedApplication: null,
   content: null,
   selectOptions: [
-    { type: "input", text_field: true },
-    { type: "textarea", text_field: true },
-    { type: "select", text_field: false },
-    { type: "checkbox", text_field: false }
+    { type: "input", name: "Short Answer", text_field: true },
+    { type: "textarea", name: "Long Answer", text_field: true },
+    { type: "select", name: "Select", text_field: false },
+    { type: "checkbox", name: "Multi Choice", text_field: false }
   ]
 };
 
-const getters = {
+export const getters = {
   applications: state => state.applications,
   selectedApplication: state => state.selectedApplication,
   selectOptions: state => state.selectOptions,
@@ -25,17 +23,40 @@ const getters = {
   current: state => state.currentPage,
   total: state => state.total,
   content: state => state.content,
+  answers: (state, getters) => {
+    if (getters.selectedApplication && getters.content) {
+      return getters.selectedApplication.fields.map(field => {
+        const record = getters.content.fields.find(
+          content => content.aid === field.qid
+        );
+        const { question } = field;
+        const answer = record ? record.value : null;
+        return { question, answer };
+      });
+    }
+    return null;
+  }
 };
 
-const mutations = {
+export const mutations = {
   SET_APPLICATIONS(state, results) {
     state.applications = results;
   },
   SET_SELECTED_APPLICATION(state, application) {
     state.selectedApplication = application;
   },
-  SET_CONTENT(state, content) {
-    state.content = content;
+  SET_CONTENT(state, id) {
+    if (typeof id === "string") {
+      const record = state.selectedApplication.applications.find(
+        el => el.id === id
+      );
+
+      if (record) {
+        state.content = record;
+      }
+    } else {
+      state.content = null;
+    }
   },
   SET_CURRENT_PAGE(state, num) {
     state.currentPage = num;
@@ -48,9 +69,9 @@ const mutations = {
   }
 };
 
-const actions = {
-  setContent({ commit }, payload) {
-    commit("SET_CONTENT", payload);
+export const actions = {
+  setContent({ commit }, id) {
+    commit("SET_CONTENT", id);
   },
   async fetchApplicationTemplates({ state, commit }) {
     try {
@@ -78,12 +99,4 @@ const actions = {
       return Promise.reject(err);
     }
   }
-};
-
-export default {
-  namespaced,
-  state,
-  getters,
-  mutations,
-  actions
 };

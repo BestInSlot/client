@@ -4,7 +4,8 @@
             <span class="subtitle is-4">Pending</span>
             <applicant-item v-for="(application, i) in pending" 
                 :created_at="application.created_at" 
-                :applicant="application.applicant" 
+                :applicant="application.applicant"
+                :id="application.id" 
                 :key="i"> 
             </applicant-item>
         </div>
@@ -27,10 +28,6 @@ export default {
         "recruitment/selectedApplication"
       ].applications.filter(app => !app.pending);
     }
-  },
-
-  beforeDestroy() {
-    this.$store.dispatch("fetchApplicants", null);
   }
 };
 </script>

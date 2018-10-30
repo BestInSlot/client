@@ -1,14 +1,17 @@
 #create-application,
 #recruitment {
   .head {
-    display: flex;
     position: relative;
-    background-color: #0b0b0b;
-    box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.5);
-    padding: 0.75rem;
-    align-items: center;
+    background-color: #0f0f0f;
+    border-bottom: 2px solid $highlight-color;
+    padding: 0.5rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    &.flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .left,
     .right {
       display: flex;
@@ -54,7 +57,7 @@
       color: #cacaca;
     }
     &:hover {
-      box-shadow: 1px 1px 5px rgba(55,55,55,0.7);
+      box-shadow: 1px 1px 5px rgba(55, 55, 55, 0.7);
     }
   }
 }
@@ -67,7 +70,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  overflow-y: auto;
+  overflow-y: overlay;
   .top {
     border-bottom: 3px solid rgba(55, 55, 55, 0.5);
     display: flex;
@@ -135,9 +138,12 @@
     margin-bottom: 1.5rem;
   }
 
-  .container {
+  .composer-container {
     height: 100%;
     min-height: 100%;
+    width: 100%;
+    max-width: 1344px;
+    margin: 0 auto;
     position: relative;
     background-color: #272727;
     display: flex;
@@ -149,8 +155,14 @@
     width: 100%;
     max-width: 1344px;
     z-index: 100;
+    left: 0;
+    right: 0;
+    margin: auto;
     &:not(.top) {
       bottom: 0;
+    }
+    &:not(.footer) {
+      top: 0;
     }
   }
 
@@ -163,7 +175,6 @@
     padding: 6rem 0 0;
     background-color: #272727;
     position: absolute;
-    overflow: hidden;
     form,
     #questions {
       background-color: #272727;
@@ -179,7 +190,7 @@
       // margin: 1.5rem 0;
       position: relative;
       border-bottom: 1px solid #000;
-      box-shadow: inset 0px -1px rgba(255,255,255,0.1);
+      box-shadow: inset 0px -1px rgba(255, 255, 255, 0.1);
       // &:last-child {
       //   .dropdown > .dropdown-menu {
       //     top: -90px;

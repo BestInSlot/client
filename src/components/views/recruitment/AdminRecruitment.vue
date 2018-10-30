@@ -3,7 +3,7 @@
         <div class="container">
             <div class="columns is-multiline">
                 <div class="column is-12">
-                    <div class="head">
+                    <div class="head flex">
                         <div class="left">
                             <h4 class="subtitle is-4">Templates</h4>
                         </div>
@@ -42,8 +42,8 @@
 </template>
 
 <script>
-import TemplateComposer from "@/components/composer/TemplateComposer";
-import RecruitmentComposer from "@/components/composer/RecruitmentComposer";
+import TemplateComposer from "@/components/composer/TemplateComposer.1";
+import RecruitmentComposer from "@/components/composer/RecruitmentComposer1";
 import {mapGetters} from "vuex";
 export default {
   components: { TemplateComposer, RecruitmentComposer },

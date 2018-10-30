@@ -1,23 +1,34 @@
 <template >
-    <div class="wrapper" @click.stop="selector = 0" >
+    <div class="wrapper" @click.stop="selector = 0">
       <div id="questions" v-if="isSuperUser">
         <draggable :list="elements" :options="options">
           <div class="question" v-for="(element, parent) in elements" :key="parent">
               <div class="content">
-                  <strong>QUESTION {{parent+1}}</strong>
+                  <strong><small>QUESTION {{parent+1}}</small></strong>
                   <p>{{element.question}}</p>
               </div>
-              <form-element :type="element.type" :selectOptions="element.subElements" :selector="selector" :selectorId="parent+1" @toggle="toggle"/>
+              <form-element 
+              :type="element.type" 
+              :selectOptions="element.subElements" 
+              :selector="selector" 
+              :selectorId="parent+1" 
+              @toggle="toggle"/>
           </div>
         </draggable>
       </div>
       <div id="questions" v-else>
         <div class="question" v-for="(element, parent) in elements" :key="parent">
             <div class="content">
-                <strong>QUESTION #{{parent+1}}</strong>
+                <strong><small>QUESTION {{parent+1}}</small></strong>
                 <p>{{element.question}}</p>
             </div>
-            <form-element v-model="element.answer" :type="element.type" :selectOptions="element.subElements" :selector="selector" :selectorId="parent+1" @toggle="toggle"/>
+            <form-element 
+            v-model="element.answer.value" 
+            :type="element.type" 
+            :selectOptions="element.subElements" 
+            :selector="selector" 
+            :selectorId="parent+1" 
+            @toggle="toggle"/>
         </div>
       </div>
     </div>

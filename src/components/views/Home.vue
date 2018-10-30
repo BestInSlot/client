@@ -22,7 +22,7 @@
         <template v-if="posts.length">
           <div class="column is-12" v-for="(post, index) in posts" :key="index">
             <app-post :post="post"/>
-        </div>
+          </div>
         </template>
         <template v-else>
           <div class="column is-12">
@@ -39,12 +39,14 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from "vuex";
 import Pagination from "@/components/Pagination";
 import Post from "@/components/NewsPost";
 import Carousel from "@/components/carousel/Carousel";
 import TextEditor from "@/components/editor/ComposerNoPreview";
-import { mapGetters, mapActions } from "vuex";
 import { auth } from "@/main";
+
+const { mapGetters, mapActions } = createNamespacedHelpers("posts");
 
 export default {
   name: "home",
@@ -66,7 +68,7 @@ export default {
       if (require_login && !token) {
         vm.$store.dispatch("setModal", true);
       }
-      vm.$store.dispatch("fetch", page);
+      vm.fetch(page);
     });
   },
 
@@ -77,9 +79,10 @@ export default {
 
     if (require_login && !token) {
       this.$store.dispatch("setModal", true);
+      next(false);
     }
-    this.$store.dispatch("fetch", page)
-    next();
+    this.fetch(page);
+    
   },
 
   data() {
@@ -104,7 +107,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["showEditor", "posts", "total", "totalPages", "current"])
+    ...mapGetters([, "posts", "total", "totalPages", "current"]),
+    showEditor() {
+      return this.$store.getters.showEditor;
+    }
   },
 
   methods: {

@@ -12,7 +12,6 @@
         @change="$emit('change', { key: attrs.id, value: $event.target.value})" 
         required="required">
         <label for="" class="input-label">{{attrs.label}}</label>
-        <!-- <span class="input-error" v-if="errors.has(id)">{{errors.first(id)}}</span> -->
         <span class="input-error" v-if="error">{{error}}</span>
     </div>
 </template>

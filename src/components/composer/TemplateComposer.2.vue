@@ -2,12 +2,12 @@
  <div class="composer" ref="create" v-show="isActive">
         <div class="composer-container" :style="hasOverflow">
             <div class="composer-head is-fixed">
-                <div class="top">
-                    <div class="left">
+                <div class="level">
+                    <div class="level-left">
                         <h4 class="subtitle is-4" @click="onTitleEdit" v-if="!editTitle">{{hasTitle}}</h4>
-                        <input type="text" ref="titleInput" class="input" placeholder="Create Application..." v-model="title" @keyup.enter="editTitle = false" @blur="editTitle = false" v-else>
+                        <input type="text" class="input" placeholder="Create Application..." v-model="title" @keyup.enter="editTitle = false" @blur="editTitle = false" v-else>
                     </div>
-                    <div class="right">
+                    <div class="level-right">
                         <div :class="dropdownClasses" v-if="hasControls">
                             <div class="dropdown-toggle">
                                 <button class="button is-info is-small-tablet is-small-mobile" :disabled="isPreview" @click.stop="dropdown = !dropdown">
@@ -18,7 +18,7 @@
                             <div class="dropdown-menu">
                                 <div class="dropdown-content">
                                     <a href="" class="dropdown-item" @click.prevent.stop="addElement(index)" v-for="(option, index) in selectOptions" :key="index">
-                                        {{option.name.charAt(0).toUpperCase() + option.name.slice(1)}}
+                                        {{option.name.charAt(0).toUpperCase() + option.type.slice(1)}}
                                     </a>
                                 </div>
                             </div>
@@ -67,6 +67,7 @@
 <script>
 import Editor from "./Editor";
 import Preview from "./Preview";
+import nanoid from "nanoid";
 export default {
   props: {
     isActive: { type: Boolean, required: true },
@@ -178,11 +179,8 @@ export default {
   methods: {
     onTitleEdit(evt) {
       this.editTitle = true;
-      // this.$nextTick(() => {
-      //   document.querySelector(".top > .left > .input").focus();
-      // });
       this.$nextTick(() => {
-        this.$refs.titleInput.focus();
+        document.querySelector(".top > .left > .input").focus();
       });
     },
     switchToEditor() {
@@ -212,7 +210,7 @@ export default {
 
     addElement(index) {
       const selected = this.selectOptions;
-      const qid = Math.random()
+      const qid = Math.round()
         .toString(36)
         .substr(2);
       this.fields = {

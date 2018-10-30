@@ -1,14 +1,21 @@
 <template>
-  <div :id="id"></div>
+  <div :id="id">
+  </div>
 </template>
 
 <script>
-import { init, exec } from "bis-pell";
+import { init, exec, toggleDisable } from "bis-pell";
+import pick from "lodash/pick";
 import actions from "./actions";
 export default {
   props: {
     value: {
-      type: String
+      type: String,
+      default: ""
+    },
+    content: {
+      type: String,
+      default: ""
     },
     id: {
       type: String,
@@ -24,20 +31,29 @@ export default {
     },
     actions: {
       type: Array,
-      default: () => [
-        "bold",
-        "italic",
-        "underline",
-        "heading1",
-        "heading2",
-        "code",
-        "link",
-        "image"
-      ]
+      // default: () => [
+      //   "bold",
+      //   "italic",
+      //   "underline",
+      //   "heading1",
+      //   "heading2",
+      //   "code",
+      //   "link",
+      //   "image"
+      // ]
+      default: () => actions
     },
     classPrefix: {
       type: String,
       default: "pell"
+    },
+    hasSubmitButton: {
+      type: Boolean,
+      default: false
+    },
+    submitButtonClass: {
+      type: String,
+      default: "button is-primary is-small"
     },
     name: String
   },
@@ -53,47 +69,60 @@ export default {
     editableContent() {
       const copy = { ...this.$store.getters["posts/editableContent"] };
       return copy.body;
+    },
+    classes() {
+      return {
+        actionbar: `${this.classPrefix}-actionbar`,
+        button: `${this.classPrefix}-button`,
+        content: `${this.classPrefix}-content`,
+        selected: `${this.classPrefix}-button-selected`,
+        submitContainer: `${this.classPrefix}-submit`,
+        submitButton: `${this.classPrefix}-button ${this.submitButtonClass}`
+      };
     }
   },
 
   methods: {
+    setContent(val) {
+      this.editor.content.innerHTML = this.value;
+      this._content = val;
+      this.$emit("input", val);
+      return this;
+    },
+    toggleButton(bool) {
+      if (!this.editor) return;
+      toggleDisable(bool);
+      console.log(toggleDisable);
+      return this;
+    },
     init() {
       const element = document.getElementById(this.id);
-      const {
-        defaultParagraphSeparator,
-        styleWithCss,
-        actions,
-        classPrefix
-      } = this;
-
-      const classes = {};
-
-      const pellClasses = [
-        "actionbar",
-        "button",
-        "content",
-        "button-selected"
-      ].forEach(key => {
-        classes[key] = `${classPrefix}-${key}`;
-      });
+      const props = pick(this.$props, [
+        "defaultParagraphSeparator",
+        "styleWithCss",
+        "hasSubmitButton",
+        "buttonText",
+        "actions"
+      ]);
 
       let opts = {
         element,
-        defaultParagraphSeparator,
-        styleWithCss,
-        classes: { ...classes },
+        ...props,
+        classes: { ...this.classes },
         onChange: h => {
-          console.log(`${/<\s*p><\s*br><\s*\/p>/g.test(h)} regex detected`);
-          let html = /<\s*p><\s*br><\s*\/p>/g.test(h) ? "" : h;
+          const html = /<\s*p><\s*br><\s*\/p>/g.test(h) ? "" : h;
           this.$emit("input", html);
           // this.$emit("update:value", html)
           this.$emit("change", { editor: this.editor, html: html });
         }
       };
-      if (actions.length) {
+
+      if (actions && actions.length) {
         opts.actions = actions;
       }
+
       this.editor = init(opts);
+
       if (this.editor) {
         this.value
           ? (this.editor.content.innerHTML = this.value)
@@ -110,18 +139,7 @@ export default {
   },
 
   watch: {
-    editableContent(val) {
-      if (this.editor) {
-        if (!!val && val !== this._content) {
-          this._content = val;
-          this.editor.content.innerHTML = this._content;
-        } else {
-          this._content = this.placeholder;
-          this.editor.content.innerHTML = this._content;
-        }
-      }
-    },
-    value(val) {
+    content(val) {
       if (this.editor) {
         if (!!val && val !== this._content) {
           this._content = val;
@@ -152,6 +170,13 @@ $pell-content-height: 100%;
 #comment-editor {
   display: flex;
   flex-direction: column-reverse;
+  position: relative;
+  blockquote {
+    padding: 0.75rem;
+    background-color: #272727;
+    border-left: 2px solid #171717;
+    border-bottom: 2px solid #171717;
+  }
 }
 .pell-content,
 .pell-actionbar,
@@ -198,15 +223,14 @@ $pell-content-height: 100%;
   border-bottom-right-radius: 4px;
 }
 .comment-submit {
-  display: flex;
+  display: inline-flex;
   flex: 1;
   justify-content: flex-end;
-  padding: 0.5rem;
+  padding: 0.25rem;
 }
 .pell-button,
 .comment-button {
   color: #f1f1f1;
-  padding: 0.5rem;
   background: none;
   border: none;
   &:hover {

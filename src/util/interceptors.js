@@ -5,6 +5,7 @@ export default function execute() {
     },
     err => {
       if (err.status === 401 && err.config && !err.config_isRetryRequest) {
+        console.log("logged out");
         this.$auth.logout();
       }
       return Promise.reject(err);

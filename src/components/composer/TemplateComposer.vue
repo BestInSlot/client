@@ -1,6 +1,6 @@
 <template>
  <div id="create-application" ref="create" v-show="isActive">
-        <div class="container" :style="hasOverflow">
+        <div class="composer-container" :style="hasOverflow">
             <div class="top is-fixed">
                 <div class="controls">
                     <div class="left">
@@ -142,7 +142,7 @@ export default {
       return this.isPreview ? "slide-out-left" : "slide-out-right";
     },
     hasOverflow() {
-      return { "overflow-x": this.overflow ? "hidden" : null };
+      return { "overflow": this.overflow ? "hidden" : null };
     },
     hasControls() {
       return this.isSuperUser;

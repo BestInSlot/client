@@ -1,5 +1,10 @@
-
 @media screen and (max-width: $desktop) {
+  .composer {
+    .composer-head,
+    .composer-footer {
+      right: 18px;
+    }
+  }
   .stream-list {
     // flex-direction: row !important;
     // flex-wrap: wrap;
@@ -41,8 +46,8 @@
 
 $extra-small: 640px;
 
-
 @media screen and (max-width: $extra-small) {
+  
   .stream-list {
     .stream {
       .s-thumbnail {

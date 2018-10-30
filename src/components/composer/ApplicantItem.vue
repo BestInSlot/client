@@ -1,21 +1,20 @@
 <template>
-    <div class="applicant">
+    <div class="applicant" @click="view">
          <span class="icon is-large">
             <img :src="`http://localhost${applicant.avatar}`" alt="">
          </span>
         <span class="user">{{applicant.username}}</span>
         <span class="date">{{date}}</span>
-        <span class="buttons">
-            <button class="button is-info is-small">View</button>
-            <button class="button is-success is-small">Accept</button>
-            <button class="button is-danger is-small">Decline</button>
+        <span class="actions buttons">
+            <button class="button is-success is-small" @click.stop="">Accept</button>
+            <button class="button is-danger is-small" @click.stop="">Decline</button>
         </span>
     </div>
 </template>
 
 
 <script>
-import format from "date-fns/format"
+import {formatDate} from "../../../helpers";
 export default {
     props: {
         applicant: {
@@ -25,11 +24,20 @@ export default {
         created_at: {
             type: String,
             required: true
+        },
+        id: {
+            type: String,
+            requred: true
         }
     },
     computed: {
         date() {
-            return format(this.created_at, "dddd, MMM, Do, YYYY");
+            return formatDate(this.created_at, "dddd, MMM, Do, YYYY");
+        },
+    },
+    methods: {
+        view() {
+            this.$store.dispatch("recruitment/setContent", this.id)
         }
     }
 }
@@ -45,9 +53,17 @@ export default {
   align-items: center;
   .user, .date {
       flex: 1;
+      padding: 0 1rem;
   }
   .user {
       padding: 0 1rem;
+  }
+  &:not(:last-child) {
+      margin-bottom: 1px;
+  }
+  .actions {
+      position: relative;
+      z-index: 100;
   }
 }
 </style>

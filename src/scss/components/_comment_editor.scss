@@ -1,0 +1,37 @@
+.comment-editor {
+  display: flex;
+  flex-direction: column-reverse;
+  .ql-toolbar.ql-snow {
+    background-color: #1c1c1c;
+    display: flex;
+    border: transparent;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    .submit-wrapper {
+      display: inline-flex;
+      justify-content: flex-end;
+      flex: 1;
+      button {
+        width: unset;
+        background-color: $primary;
+        color: #fff;
+      }
+    }
+  }
+  .ql-container.ql-snow {
+    background-color: #1f1f1f;
+    border: none;
+    min-height: 150px;
+  }
+  blockquote,
+  .quote {
+    margin: 0 !important;
+    padding-left: 1em !important;
+    border-left: 3px solid #272727 !important;
+    background-color: #232323;
+    .quote-author {
+        font-size: 0.75rem;
+        font-style: italic;
+    }
+  }
+}

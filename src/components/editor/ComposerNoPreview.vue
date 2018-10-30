@@ -78,7 +78,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["editableContent", "verb"]),
+    ...mapGetters("posts", ["editableContent", "verb"]),
 
     rootClasses() {
       return { draft: this.hidden };

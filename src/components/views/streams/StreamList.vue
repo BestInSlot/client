@@ -82,25 +82,37 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { createNamespacedHelpers } from "vuex"
 import BreadCrumbs from "@/components/breadcrumbs/Breadcrumbs";
 import Stream from "@/components/views/streams/StreamItem";
 import StreamModal from "@/components/views/streams/AddStream";
 import Pagination from "@/components/Pagination";
 import store from "@/store";
 
+const { mapGetters, mapActions } = createNamespacedHelpers("streams");
+
+
 export default {
   name: "stream_list",
   components: { Stream, StreamModal, BreadCrumbs, Pagination },
   async beforeRouteEnter(to, from, next) {
-    await store
-      .dispatch("fetchStreams")
-      .then(
-        next(vm => {
-          vm.$socket.emit("join room", "streams");
-        })
-      )
-      .catch(e => console.log("Couldn't fetch streams"));
+    try {
+      next(vm => {
+        vm.$store.dispatch("streams/fetchStreams");
+        vm.$socket.emit("join room", "streams");
+      })
+    }
+    catch (err) {
+      console.log(err);
+    }
+    // await store
+    //   .dispatch("streams/fetchStreams")
+    //   .then(
+    //     next(vm => {
+    //       vm.$socket.emit("join room", "streams");
+    //     })
+    //   )
+    //   .catch(e => console.log("Couldn't fetch streams"));
   },
 
   beforeRouteLeave(to, from, next) {
@@ -177,7 +189,7 @@ export default {
         .finally(() => (this.isLoading = false));
     },
     changePage(num) {
-      this.$store.dispatch("changePage", num);
+      this.$store.dispatch("streams/changePage", num);
       this.fetch();
     },
     isActiveTab(index) {
@@ -186,7 +198,7 @@ export default {
     setTab(num, tab) {
       this.activeTab = num;
       this.pagination.current = 1;
-      this.$store.commit("SET_FILTER", tab);
+      this.$store.commit("streams/SET_FILTER", tab);
     }
   }
 };

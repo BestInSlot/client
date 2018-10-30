@@ -1,6 +1,6 @@
 <template>
   <div class="composer" v-show="isActive">
-    <div class="composer-container" :style="hasOverflow">
+    <div class="container composer-container" :style="hasOverflow">
         <div class="composer-head is-fixed">
             <div class="top">
                 <div class="left">
@@ -13,17 +13,26 @@
                 </div>
             </div>
             <div class="controls" v-if="!viewApplicant">
-              <div class="left">
-                <pagination :total="total" :current="current" :per-page="limit" :size="'is-small'"/>
-              </div>
               <div class="right">
                 <div class="select is-small">
                   <select class="composer-select" name="applicant-limit" v-model="limit">
-                    <option value="20">Show: 20</option>
-                    <option value="40">Show: 40</option>
-                    <option value="60">Show: 60</option>
+                    <option value.number="20">Show: 20</option>
+                    <option value.number="40">Show: 40</option>
+                    <option value.number="60">Show: 60</option>
                   </select>
                 </div>
+              </div>
+               <div class="left">
+                <pagination :total="total" :current="current" :per-page="limit" :size="'is-small'"/>
+              </div>
+            </div>
+            <div class="controls" v-else>
+              <div class="right">
+                <ul>
+                  <li @click="$store.dispatch('recruitment/setContent', null)">
+                      <a>Go to List</a>
+                  </li>
+                </ul>
               </div>
             </div>
         </div>
@@ -34,27 +43,26 @@
           @before-leave="before"
           @after-enter="after"
           @after-leave="after">
-          <!-- <component :is="selected" @view="viewApplicant" @remove="removeApplicant" @goBack="viewApplicant = false"/> -->
-          <component :is="selected"/>
+          <component :is="selected" @updateTitle="applicationName = $event"/>
         </transition>
-        <div class="footer is-fixed" v-if="viewApplicant">
+        <div class="composer-footer is-fixed" v-if="viewApplicant">
             <div class="buttons">
-              <button class="button is-fullwidth is-success" @click.stop="setRecruitmentAppState({approved: true, reject: false})">
+              <button class="button composer-button is-half is-success" @click.stop="setRecruitmentAppState({approved: true, reject: false})">
                   Accept
               </button>
-              <button class="button is-fullwidth is-success" @click.stop="setRecruitmentAppState({approved: false, reject: true})">
+              <button class="button composer-button is-half is-danger" @click.stop="setRecruitmentAppState({approved: false, reject: true})">
                   Reject
               </button>
             </div>
         </div>
-        <div class="footer is-fixed" v-else></div>
+        <div class="composer-footer is-fixed" v-else></div>
     </div>
   </div>
 </template>
 
 <script>
 import ViewList from "./ViewList";
-import ViewApplicant from "./ViewApplicant";
+import ViewApplicant from "./ViewApplicant.1";
 import Pagination from "@/components/Pagination";
 import { mapActions } from "vuex";
 export default {
@@ -71,24 +79,16 @@ export default {
   data() {
     return {
       dropdown: false,
-      viewApplicant: false,
       overflow: false,
-      applicant: null,
       current: 1,
-      limit: 20
+      limit: 20,
+      title: ""
     };
   },
 
   beforeDestroy() {
-    // this.$emit("update:isActive", false);
+    this.$emit("update:isActive", false);
     document.documentElement.style = null;
-
-  },
-
-  watch: {
-    isActive(isActive) {
-      document.documentElement.style = isActive ? "overflow-y: hidden;" : null;
-    }
   },
 
   created() {
@@ -100,7 +100,9 @@ export default {
       return this.$store.getters["recruitment/selectedApplication"].applications
         .length;
     },
-
+    viewApplicant() {
+      return !!this.$store.getters["recruitment/content"];
+    },
     modalOverlay() {
       return ["is-overlay", { show: this.isActive }];
     },
@@ -115,19 +117,21 @@ export default {
           : "view-applicant";
     },
     slideEnter() {
-      return this.isPreview ? "slide-in-left" : "slide-in-right";
+      return this.viewApplicant ? "slide-in-left" : "slide-in-right";
     },
     slideLeave() {
-      return this.isPreview ? "slide-out-left" : "slide-out-right";
+      return this.viewApplicant ? "slide-out-left" : "slide-out-right";
     },
     hasOverflow() {
       return { "overflow-x": this.overflow ? "hidden" : null };
     },
-    hasTitle() {
-      return this.title ? this.title : "Application";
-    },
-    applicationName() {
-      return this.$store.getters["recruitment/selectedApplication"].title;
+    applicationName: {
+      get() {
+        return this.title || this.$store.getters["recruitment/selectedApplication"].title;
+      },
+      set(val) {
+        this.title = val;
+      }
     },
     isSuperUser() {
       return this.$auth.user().is_admin || this.$auth.user().is_curator;
@@ -177,6 +181,8 @@ export default {
 
     onClose() {
       this.$emit("update:isActive", false);
+      this.$store.dispatch("recruitment/setContent", null);
+      this.$store.commit("recruitment/SET_SELECTED_APPLICATION", null);
     },
 
     async save() {}
@@ -185,5 +191,54 @@ export default {
 </script>
 
 <style>
-@import "../../scss/animations/composer-animations.scss";
+.slide-out-left {
+  animation: slideLeftOut 0.25s ease;
+}
+.slide-out-right {
+  animation: slideRightOut 0.25s ease;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.25s ease;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.25s ease;
+}
+
+@keyframes slideLeftOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideRightOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
 </style>

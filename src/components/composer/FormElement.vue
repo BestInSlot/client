@@ -138,7 +138,7 @@ export default {
     renderInput(h) {
       return h(this.type, {
         attrs: { ...this.attrs },
-        class: { ...this._classes, input: true },
+        class: { ...this._classes, input: true, "composer-input": true },
         on: {
           input: event => {
             this.$emit("input", event.target.value);
@@ -153,7 +153,7 @@ export default {
     renderTextarea(h) {
       return h(this.type, {
         attrs: { ...this.attrs },
-        class: { ...this._classes, textarea: true },
+        class: { ...this._classes, textarea: true, "composer-textarea": true },
         on: {
           input: event => {
             this.$emit("input", event.target.value);

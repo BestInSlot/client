@@ -1,5 +1,5 @@
 <template>
-<div class="wrapper">
+<div class="wrapper" :style="isTransitioning">
     <form>
         <div class="question" :id="`${element.type}_${parent}`" v-for="(element, parent) in elements" :key="parent">
             <span class="delete" @click.prevent.stop="$emit('removeElement', parent)"></span>
@@ -8,13 +8,13 @@
                     <div class="field">
                         <label class="label" for="">Question:</label>
                         <div class="control">
-                            <textarea class="textarea" cols="30" rows="2" v-model="element.question"></textarea>
+                            <textarea class="textarea composer-textarea" cols="30" rows="2" v-model="element.question"></textarea>
                         </div>
                     </div>
                     <div class="field">
                         <div class="control">
                             <div class="select is-fullwidth">
-                                <select :name="`select_${parent}`" @change="$emit('updateElement', { parent, value: $event.target.value })">
+                                <select class="composer-select" :name="`select_${parent}`" @change="$emit('updateElement', { parent, value: $event.target.value })">
                                     <option :value="o" v-for="(opt, o) in selectOptions" :key="o" :selected="opt.type === element.type">
                                         {{opt.type.charAt(0).toUpperCase() + opt.type.slice(1)}}
                                     </option>
@@ -43,14 +43,14 @@
                                 <div class="field-body">
                                     <div class="field is-grouped">
                                         <div class="control is-expanded">
-                                            <input class="input" placeholder="Insert field title.." type="text" v-model="subElement.title">
+                                            <input class="composer-input input" placeholder="Insert field title.." type="text" v-model="subElement.title">
                                         </div>
                                         <div class="control" v-if="subElement.type === 'text_num'">
-                                            <input class="input" placeholder="Insert value..." type="text" v-model="subElement.value">
+                                            <input class="composer-input input" placeholder="Insert value..." type="text" v-model="subElement.value">
                                         </div>
                                         <div class="control" v-else>
                                             <div class="select">
-                                                <select :name="`select_${parent}_${child}`" v-model="subElement.value">
+                                                <select class="composer-select" :name="`select_${parent}_${child}`" v-model="subElement.value">
                                                     <option value="true">
                                                         Default: True
                                                     </option>
@@ -62,7 +62,7 @@
                                         </div>
                                         <div class="control">
                                             <div class="select">
-                                                <select :name="`select_${parent}_${child}`" v-model="subElement.type">
+                                                <select class="composer-select" :name="`select_${parent}_${child}`" v-model="subElement.type">
                                                     <option value="text_num">
                                                         Text/Num
                                                     </option>
@@ -102,11 +102,15 @@ export default {
     elements: {
       type: Array,
       required: true
-    }
+    },
+    overflow: Boolean
   },
   computed: {
     selectOptions() {
       return this.$store.getters["recruitment/selectOptions"];
+    },
+    isTransitioning() {
+      return this.overflow? "overflow: hidden" : null;
     }
   }
 };

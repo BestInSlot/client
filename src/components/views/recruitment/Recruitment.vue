@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import TemplateComposer from "@/components/composer/TemplateComposer";
+import TemplateComposer from "@/components/composer/TemplateComposer.1";
 export default {
   async beforeRouteEnter(to, from, next) {
     next(async vm => {

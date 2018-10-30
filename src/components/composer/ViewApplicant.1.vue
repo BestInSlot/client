@@ -21,7 +21,7 @@
                 </div>
                 <div class="level-right">
                   <div class="buttons level-item">
-                    <button class="button is-small is-info" @click="showEditor = !showEditor">
+                    <button class="button is-small is-info" @click="toggleEditor" :disabled="!!selectedEditor">
                       <span>Show Editor</span>
                     </button>
                     <button class="button is-small is-info" @click="getComments(content.id)">
@@ -33,7 +33,7 @@
             </div>
           </div>
           <transition name="fade">
-            <div class="column is-12" v-show="showEditor">
+            <div class="column is-12" v-show="showEditor" v-if="!selectedEditor">
               <div class="media">
                 <figure class="media-left">
                   <div class="image is-64x64">
@@ -43,12 +43,13 @@
                 <div class="media-content">
                   <div class="field">
                     <div class="control">
-                      <comment-editor v-model="body"  
-                      ref="commentEditor" 
-                      :name="'comment-editor'" 
-                      :id="'comment-editor'"
-                      :hasSubmitButton="true" 
-                      :classPrefix="'comment'"></comment-editor>
+                      <text-editor v-model="body" ref="editor" :name="'comment-editor'" :className="'comment-editor'">
+                        <text-toolbar slot="toolbar">
+                          <span class="submit-wrapper">
+                            <button class="button is-primary is-small" @click="submit" :disabled="isDisabled">COMMENT</button>
+                          </span>
+                        </text-toolbar>
+                      </text-editor>
                     </div>
                   </div>
                 </div>
@@ -80,7 +81,16 @@
           <transition name="fade">
             <div class="column is-12" v-if="comments && comments.length">
               <transition-group tag="div" class="columns is-multiline" name="fade">
-                <comment v-for="(comment, i) in comments" :key="i" :comment="comment" @quote="applyQuote"/>
+                <comment v-for="(comment, i) in comments" :key="i" :comment="comment" :selectedEditor="selectedEditor" @quote="applyQuote" @editing="enableEditing">
+                  <text-editor v-model="body" ref="commentEditor" :name="'comment-editor'" :className="'comment-editor'" v-if="selectedEditor === comment.id">
+                    <text-toolbar slot="toolbar">
+                      <span class="submit-wrapper buttons">
+                        <button class="button is-primary is-small" @click="submit" :disabled="isDisabled">SAVE</button>
+                        <button class="button is-primary is-small" @click="closeEditor">CLOSE</button>
+                      </span>
+                    </text-toolbar>
+                  </text-editor>
+                </comment>
               </transition-group>
             </div>
           </transition>
@@ -91,18 +101,19 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { formatText, getCaretPosition } from "../../../helpers";
-import TextEditor from "@/components/editor/Editor.vue";
+
+import TextEditor from "@/components/quillEditor/Quill.vue";
+import TextToolbar from "@/components/quillEditor/CommentToolbar.vue";
 import Pagination from "@/components/Pagination.vue";
-import SubmitButton from "@/components/composer/SubmitButton";
-import Comment from "@/components/composer/Comment";
-import CommentEditor from "@/components/editor/CommentEditor.vue";
+import Comment from "@/components/composer/Comment.1";
 import upperFirst from "lodash/upperFirst";
-import Vue from "vue";
 
 export default {
   name: "ViewApplicant",
-  components: { TextEditor, Pagination, Comment, CommentEditor },
+  // $_veeValidate: {
+  //   validator: "new"
+  // },
+  components: { TextEditor, TextToolbar, Pagination, Comment },
   computed: {
     ...mapGetters("recruitment", ["answers", "content"]),
     ...mapGetters("recruitmentComments", [
@@ -117,7 +128,7 @@ export default {
         this.body
           .replace(/<([^>]+)>/gi, "")
           .replace(/\s/g, "")
-          .trim().length === 0 || !this.body
+          .trim().length < 10 || !this.body
       );
     }
   },
@@ -127,6 +138,7 @@ export default {
       newComment: null,
       showEditor: false,
       isLoading: false,
+      selectedEditor: 0,
       body: ""
     };
   },
@@ -135,6 +147,7 @@ export default {
     const username = this.$store.getters["recruitment/content"].applicant
       .username;
     this.$emit("updateTitle", `${upperFirst(username)}'s Application`);
+    console.log(this.$refs);
   },
 
   beforeDestroy() {
@@ -146,8 +159,41 @@ export default {
 
   methods: {
     ...mapActions("recruitmentComments", ["getComments"]),
+    submit() {
+      console.log("submit works...");
+    },
     applyQuote(quote) {
-      
+      const editor = this.selectedEditor
+        ? this.$refs.commentEditor[0]
+        : this.$refs.editor;
+      document.querySelector(".comment-editor").scrollIntoView();
+      const text =
+        "<blockquote><em><i>Quote from " +
+        quote.author +
+        "</i></em></blockquote><blockquote>" +
+        quote.body +
+        "</blockquote>" +
+        "\n\n";
+      editor.quote(text);
+    },
+    enableEditing({ id, body }) {
+      this.showEditor = false;
+      if (this.selectedEditor === id) {
+        this.selectedEditor = 0;
+        this.body = "";
+        return;
+      }
+      this.selectedEditor = id;
+      this.body = body;
+    },
+    closeEditor() {
+      console.log("button works....");
+      this.selectedEditor = 0;
+      this.body = "";
+    },
+    toggleEditor() {
+      this.showEditor = !this.showEditor;
+      if (this.showEditor) this.$refs.editor.focus();
     },
     async createComment() {
       const id = this.content.id;

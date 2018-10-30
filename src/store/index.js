@@ -1,16 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import recruitment from "./modules/recruitment";
-import * as post from "./modules/posts";
-import * as streams from "./modules/streams";
+
+import modules from "./modules";
 
 Vue.use(Vuex);
 
-const modules = {
-  post,
-  streams,
-  recruitment
-};
 
 export default new Vuex.Store({
   state: {
@@ -24,7 +18,6 @@ export default new Vuex.Store({
     modal: state => state.modal,
     showMobileMenu: state => state.showMobileMenu,
     showEditor: state => state.showEditor,
-    _id: state => state._id,
     siteKey: state => state.siteKey,
     dropdown: state => state.dropdown
   },
