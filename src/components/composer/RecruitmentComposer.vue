@@ -62,7 +62,7 @@
 
 <script>
 import ViewList from "./ViewList";
-import ViewApplicant from "./ViewApplicant.1";
+import ViewApplicant from "./ViewApplicant";
 import Pagination from "@/components/Pagination";
 import { mapActions } from "vuex";
 export default {

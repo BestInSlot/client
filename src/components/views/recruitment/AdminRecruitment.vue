@@ -42,8 +42,8 @@
 </template>
 
 <script>
-import TemplateComposer from "@/components/composer/TemplateComposer.1";
-import RecruitmentComposer from "@/components/composer/RecruitmentComposer1";
+import TemplateComposer from "@/components/composer/TemplateComposer";
+import RecruitmentComposer from "@/components/composer/RecruitmentComposer";
 import {mapGetters} from "vuex";
 export default {
   components: { TemplateComposer, RecruitmentComposer },

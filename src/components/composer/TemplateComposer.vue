@@ -1,11 +1,11 @@
 <template>
- <div id="create-application" ref="create" v-show="isActive">
+ <div class="composer" ref="create" v-show="isActive">
         <div class="composer-container" :style="hasOverflow">
-            <div class="top is-fixed">
-                <div class="controls">
+            <div class="composer-head is-fixed">
+                <div class="top">
                     <div class="left">
                         <h4 class="subtitle is-4" @click="onTitleEdit" v-if="!editTitle">{{hasTitle}}</h4>
-                        <input type="text" class="input" placeholder="Create Application..." v-model="title" @keyup.enter="editTitle = false" @blur="editTitle = false" v-else>
+                        <input type="text" ref="titleInput" class="input" placeholder="Create Application..." v-model="title" @keyup.enter="editTitle = false" @blur="editTitle = false" v-else>
                     </div>
                     <div class="right">
                         <div :class="dropdownClasses" v-if="hasControls">
@@ -18,7 +18,7 @@
                             <div class="dropdown-menu">
                                 <div class="dropdown-content">
                                     <a href="" class="dropdown-item" @click.prevent.stop="addElement(index)" v-for="(option, index) in selectOptions" :key="index">
-                                        {{option.type.charAt(0).toUpperCase() + option.type.slice(1)}}
+                                        {{option.name.charAt(0).toUpperCase() + option.name.slice(1)}}
                                     </a>
                                 </div>
                             </div>
@@ -28,8 +28,9 @@
                         </button>
                     </div>
                 </div>
-                <div class="sub-controls" v-if="hasControls">
-                    <ul>
+                <div class="controls" v-if="hasControls">
+                    <div class="right">
+                      <ul>
                         <li :class="editor" :style="isTransitioningToPreview" @click.stop="switchToEditor">
                             <a>Editor</a>
                         </li>
@@ -37,6 +38,7 @@
                             <a>Preview</a>
                         </li>
                     </ul>
+                    </div>
                 </div>
             </div>
             <transition 
@@ -53,7 +55,7 @@
                 @addSubElement="addSubElement"
                 @removeSubElement="removeSubElement"/>
             </transition>
-            <div class="footer is-fixed">
+            <div class="composer-footer is-fixed">
                 <button class="button is-fullwidth is-info" :disabled="fields && !fields.length" @click.stop="saveTemplate">
                    Save
                 </button>
@@ -65,7 +67,6 @@
 <script>
 import Editor from "./Editor";
 import Preview from "./Preview";
-
 export default {
   props: {
     isActive: { type: Boolean, required: true },
@@ -129,7 +130,9 @@ export default {
       //if we're a super user give us the privilage of switching between the template editor and the preview.
       //else we're a standard user and can only view the preview.
       return this.isSuperUser
-        ? this.isPreview ? "app-preview" : "app-editor"
+        ? this.isPreview
+          ? "app-preview"
+          : "app-editor"
         : "app-preview";
     },
     selectOptions() {
@@ -142,7 +145,7 @@ export default {
       return this.isPreview ? "slide-out-left" : "slide-out-right";
     },
     hasOverflow() {
-      return { "overflow": this.overflow ? "hidden" : null };
+      return { overflow: this.overflow ? "hidden" : null };
     },
     hasControls() {
       return this.isSuperUser;
@@ -164,14 +167,22 @@ export default {
     },
     isSuperUser() {
       return this.$auth.user().is_admin || this.$auth.user().is_curator;
+    },
+    applicantAnswers() {
+      return this.fields.map(field => {
+        return field.answer;
+      });
     }
   },
 
   methods: {
     onTitleEdit(evt) {
       this.editTitle = true;
+      // this.$nextTick(() => {
+      //   document.querySelector(".top > .left > .input").focus();
+      // });
       this.$nextTick(() => {
-        document.querySelector(".controls > .left > .input").focus();
+        this.$refs.titleInput.focus();
       });
     },
     switchToEditor() {
@@ -201,10 +212,14 @@ export default {
 
     addElement(index) {
       const selected = this.selectOptions;
+      const qid = Math.random()
+        .toString(36)
+        .substr(2);
       this.fields = {
+        qid,
         ...selected[index],
         question: "",
-        answer: "",
+        answer: { aid: qid, value: "" },
         subElements: []
       };
       this.dropdown = false;
@@ -267,7 +282,7 @@ export default {
     },
 
     async saveTemplate() {
-      const { title, fields } = this;
+      const { title } = this;
       const author_id = this.$auth.user().id;
       const verb = this.isSuperUser ? (this.editable ? "put" : "post") : "post";
       const url = this.isSuperUser
@@ -280,7 +295,7 @@ export default {
         await this.$http[verb](url, {
           title,
           author_id,
-          fields
+          fields: this.isSuperUser ? this.fields : this.applicantAnswers
         });
         this.$toasted.show("Saved.", {
           theme: "primary",

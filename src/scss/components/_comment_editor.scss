@@ -1,37 +1,48 @@
 .comment-editor {
   display: flex;
   flex-direction: column-reverse;
-  .ql-toolbar.ql-snow {
+  #toolbar {
     background-color: #1c1c1c;
     display: flex;
-    border: transparent;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+    padding: 0.35rem 0;
     .submit-wrapper {
-      display: inline-flex;
-      justify-content: flex-end;
+      display: flex;
       flex: 1;
-      button {
-        width: unset;
-        background-color: $primary;
-        color: #fff;
+      justify-content: flex-end;
+    }
+    .sep {
+      border-left: 1px;
+      padding: 0.5rem;
+      border-color: #555;
+    }
+    .selected {
+      background-color: #0b0b0b !important;
+    }
+    .format {
+      background: transparent;
+      border: none;
+      color: #fff;
+      padding: 0 0.5rem;
+      cursor: pointer;
+      &:hover {
+        background-color: #1f1f1f;
       }
+      &:focus {
+        outline: none;
+      }
+      
     }
   }
-  .ql-container.ql-snow {
+  .editor-content {
+    height: 250px;
+    max-height: 250px;
     background-color: #1f1f1f;
-    border: none;
-    min-height: 150px;
-  }
-  blockquote,
-  .quote {
-    margin: 0 !important;
-    padding-left: 1em !important;
-    border-left: 3px solid #272727 !important;
-    background-color: #232323;
-    .quote-author {
-        font-size: 0.75rem;
-        font-style: italic;
+    overflow-y: auto;
+    blockquote {
+      padding: 1rem;
+      margin: 0.75rem;
+      border-radius: 6px;
+      background-color: #1c1c1c;
     }
   }
 }

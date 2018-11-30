@@ -9,14 +9,8 @@
             </figure>
             <div class="comment-body">
                 <div class="content" v-html="comment.body" v-if="selectedEditor !== comment.id"></div>
-                <text-editor v-model="body" ref="editor" :name="'comment-editor'" :className="'comment-editor'" v-else>
-                    <text-toolbar slot="toolbar">
-                      <span class="submit-wrapper">
-                        <button class="button is-primary is-small" @click.native="submit" :disabled="isDisabled">SAVE</button>
-                      </span>
-                    </text-toolbar>
-                  </text-editor>
-                <div class="comment-ctrls">
+                <slot></slot>
+                <div class="comment-ctrls" v-if="selectedEditor !== comment.id">
                     <div class="ctrl-right">
                         <template v-if="isAuthorOrSuperUser">
                             <span class="ctrl" role="button" @click.prevent="toggleEditing">
@@ -40,27 +34,17 @@
 </template>
 
 <script>
-import TextEditor from "@/components/quillEditor/Quill";
-import TextToolbar from "@/components/quillEditor/CommentToolbar";
 export default {
   name: "comment",
-  components: { TextEditor, TextToolbar },
   props: {
     comment: {
       type: Object,
       required: true
     },
     selectedEditor: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true
     }
-  },
-
-  data() {
-    return {
-      isEditing: false,
-      body: ""
-    };
   },
 
   computed: {
@@ -69,14 +53,6 @@ export default {
         this.comment.author.id === this.$auth.user().id ||
         this.$auth.user().is_admin ||
         this.$auth.user().is_curator
-      );
-    },
-    isDisabled() {
-      return (
-        this.body
-          .replace(/<([^>]+)>/gi, "")
-          .replace(/\s/g, "")
-          .trim().length < 10 || !this.body
       );
     }
   },
@@ -89,10 +65,7 @@ export default {
       });
     },
     toggleEditing() {
-      this.isEditing = !this.isEditing;
-      this.body = this.isEditing ? this.comment.body : "";
-      const id = this.isEditing ? this.comment.id : 0;
-      this.$emit("editing", { isEditing: this.isEditing, id });
+      this.$emit("editing", { id: this.comment.id, body: this.comment.body });
     }
   }
 };
